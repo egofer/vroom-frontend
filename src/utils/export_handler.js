@@ -23,7 +23,7 @@ var exportToFile = function() {
 
     // Export the collection to a GeoJSON file
     var d = new Date()
-    let filename = `rutas_${(new Date().toJSON().slice(0,10))}.geojson`
+    let filename = `vroom_${(new Date().toJSON().slice(0,10))}.geojson`
     FileSaver.saveAs(new File([JSON.stringify(collection)], filename, {
       type: "text/plain;charset=utf-8"
     }), filename);
