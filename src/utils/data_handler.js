@@ -11,6 +11,8 @@ var fitControl = require('../controls/fit');
 var clearControl = require('../controls/clear');
 var solveControl = require('../controls/solve');
 var summaryControl = require('../controls/summary');
+var exportControl = require('../controls/export');
+var exportHandler = require('./export_handler');
 
 var routes = [];
 var actualSteps = ['job', 'pickup', 'delivery'];
@@ -74,6 +76,17 @@ var checkControls = function() {
   } else {
     if (_getTasksSize() === 0) {
       LSetup.map.removeControl(solveControl);
+    }
+  }
+  if (!LSetup.map.exportControl) {
+    // Export control appears only when there's enough input to fire a
+    // solving query.
+    if (hasVehicles && hasTasks) {
+      exportControl.addTo(LSetup.map);
+    }
+  } else {
+    if (getJobsSize() === 0) {
+      LSetup.map.removeControl(exportControl);
     }
   }
   if (hasSolution()) {
@@ -951,6 +964,9 @@ LSetup.map.on('clear', function() {
   if (LSetup.map.solveControl) {
     LSetup.map.removeControl(LSetup.map.solveControl);
   }
+  if (LSetup.map.exportControl) {
+    LSetup.map.removeControl(LSetup.map.exportControl);
+  }
   if (LSetup.map.summaryControl) {
     LSetup.map.removeControl(LSetup.map.summaryControl);
   }
@@ -964,6 +980,11 @@ LSetup.map.on('clear', function() {
 LSetup.map.on('collapse', function() {
   LSetup.map.collapseControl.toggle();
   LSetup.map.panelControl.toggle();
+});
+
+// Export data to GeoJSON file
+LSetup.map.on('export', function() {
+exportHandler.exportToFile();
 });
 
 /*** end Events ***/
